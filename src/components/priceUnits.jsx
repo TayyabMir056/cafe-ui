@@ -9,7 +9,7 @@ class PriceUnits extends Component {
 
   setData = () => {
     console.log();
-    fetch(process.env.REACT_APP_PRICEUNITS)
+    fetch(process.env.REACT_APP_API + "/units")
       .then(res => res.json())
       .then(
         result => {
@@ -32,7 +32,7 @@ class PriceUnits extends Component {
   };
 
   handleAddNew = event => {
-    fetch(process.env.REACT_APP_PRICEUNITS, {
+    fetch(process.env.REACT_APP_API + "/units", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -58,7 +58,7 @@ class PriceUnits extends Component {
   };
 
   handleDelete = id => {
-    fetch(process.env.REACT_APP_PRICEUNITS + "/" + id, {
+    fetch(process.env.REACT_APP_API + "/units/" + id, {
       method: "DELETE",
       headers: {
         Accept: "application/json",
@@ -68,7 +68,7 @@ class PriceUnits extends Component {
   };
 
   handleEdit = (id, name, editable) => {
-    fetch(process.env.REACT_APP_PRICEUNITS + id, {
+    fetch(process.env.REACT_APP_API + "/units/" + id, {
       method: "PUT",
       body: JSON.stringify({
         name: name
