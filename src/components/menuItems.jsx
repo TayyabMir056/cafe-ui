@@ -155,11 +155,10 @@ class MenuItems extends Component {
         {/* New Form */}
         <form onSubmit={this.handleAddNew}>
           <div className="form-group">
-            <label for="formInputMenuName">Name:</label>
+            <label>Name:</label>
             <input
               type="text"
               className="form-control"
-              id="formInputMenuName"
               placeholder="Enter Name"
               required
               onChange={event => {
@@ -167,19 +166,17 @@ class MenuItems extends Component {
               }}
             />
           </div>
-          <label for="formInputCategory">Category:</label>
+          <label>Category:</label>
           <Select
-            id="formInputCategory"
             options={this.state.categories}
             onChange={val =>
               this.handleFormChange("category", { id: val.value })
             }
           />
-          <label for="formInputSellingPrice">Selling Price:</label>
+          <label>Selling Price:</label>
           <input
             type="number"
             className="form-control"
-            id="formInputSellingPrice"
             placeholder="Selling Price"
             required
             onChange={event => {

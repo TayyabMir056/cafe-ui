@@ -66,8 +66,7 @@ class Categories extends Component {
   };
 
   setData = () => {
-    console.log("h");
-    fetch("http://localhost:3000/categories/")
+    fetch(process.env.REACT_APP_API + "/categories/")
       .then(res => res.json())
       .then(
         result => {
