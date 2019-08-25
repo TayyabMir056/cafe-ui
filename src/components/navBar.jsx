@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import MenuItems from "./menuItems";
 import Categories from "./categories";
 import PriceUnits from "./priceUnits";
+import InventoryIngredients from "./inventoryIngredients";
 
 class NavBar extends Component {
   render() {
@@ -37,6 +38,16 @@ class NavBar extends Component {
                   </Link>
                 </li>
                 <li className="nav-item">
+                  <Link className="nav-link" to="/inventory-ingredients/">
+                    Inventory Ingredients
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/intermediate-ingredient/">
+                    Interediate Ingredients
+                  </Link>
+                </li>
+                <li className="nav-item">
                   <Link className="nav-link" to="/units/">
                     Price Units
                   </Link>
@@ -47,6 +58,11 @@ class NavBar extends Component {
 
           <Route path="/" exact component={MenuItems} />
           <Route path="/categories/" component={Categories} />
+          <Route
+            path="/inventory-ingredients/"
+            component={InventoryIngredients}
+          />
+          <Route path="/intermediate-ingredients/" component={PriceUnits} />
           <Route path="/units/" component={PriceUnits} />
         </div>
       </Router>

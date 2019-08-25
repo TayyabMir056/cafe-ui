@@ -96,7 +96,7 @@ class MenuItems extends Component {
     if (
       this.state.formData.name &&
       this.state.formData.category &&
-      this.state.formData
+      this.state.formData.sellingPrice
     ) {
       fetch(process.env.REACT_APP_API + "/menu-item", {
         method: "POST",
