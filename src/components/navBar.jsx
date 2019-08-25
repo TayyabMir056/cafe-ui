@@ -4,6 +4,7 @@ import MenuItems from "./menuItems";
 import Categories from "./categories";
 import PriceUnits from "./priceUnits";
 import InventoryIngredients from "./inventoryIngredients";
+import IntermediateIngredients from "./indermediateIngredients";
 
 class NavBar extends Component {
   render() {
@@ -43,8 +44,8 @@ class NavBar extends Component {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/intermediate-ingredient/">
-                    Interediate Ingredients
+                  <Link className="nav-link" to="/intermediate-ingredients/">
+                    Intermediate Ingredients
                   </Link>
                 </li>
                 <li className="nav-item">
@@ -62,7 +63,10 @@ class NavBar extends Component {
             path="/inventory-ingredients/"
             component={InventoryIngredients}
           />
-          <Route path="/intermediate-ingredients/" component={PriceUnits} />
+          <Route
+            path="/intermediate-ingredients/"
+            component={IntermediateIngredients}
+          />
           <Route path="/units/" component={PriceUnits} />
         </div>
       </Router>
