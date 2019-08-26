@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Select from "react-select";
 import EdiText from "react-editext";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import MenuItemRecipe from "./menuItemRecipe";
 
 class MenuItem extends Component {
   state = {};
@@ -52,6 +54,19 @@ class MenuItem extends Component {
               : this.props.data.cost}
           </h5>
         </div>
+        <Router>
+          <button type="button" className="btn btn-info">
+            <Link className="nav-link" to={"/menu-item-recipe/"}>
+              Edit Recipe
+            </Link>
+          </button>
+
+          <Route
+            exact
+            path="/menu-item-recipe/"
+            component={() => <MenuItemRecipe />}
+          />
+        </Router>
         <button
           onClick={() => this.props.onDelete(this.props.data.id)}
           type="button"

@@ -43,13 +43,7 @@ class IntermediateIngredient extends Component {
               Edit Recipe
             </Link>
           </button>
-          <button
-            onClick={() => this.props.onDelete(this.props.data.id)}
-            type="button"
-            className="btn btn-danger"
-          >
-            X
-          </button>
+
           <Route
             exact
             path="/intermediate-ingredient-recipe"
