@@ -6,7 +6,7 @@ class InventoryIngredient extends Component {
   state = {};
   render() {
     return (
-      <div>
+      <div className="card" style={{ width: "18rem" }}>
         <label htmlFor="inventoryItemName">Name:</label>
         <EdiText
           id="inventoryItemName"

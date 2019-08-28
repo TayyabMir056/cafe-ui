@@ -1,15 +1,30 @@
+/*
+Component: Categories
+Description: The List of categories that a menu item can be in.
+Sub-components: Category (imported as a card)
+Examples: Cakes, Beverages
+*/
+
 import React, { Component } from "react";
 import Category from "./category";
 class Categories extends Component {
   state = {
     error: null,
     data: [],
-    inputValue: ""
+    inputValue: "" //Contains the value entered in the form to add new category
   };
 
+  //handleChange():
+  //Triggered when a value is entered in the form to add new category
+  //Functionality: store the form of input text in state.inputValue
   handleChange = event => {
     this.setState({ inputValue: event.target.value });
   };
+
+  //handleAddNew():
+  //Triggered when the form is "submitted" i.e. when a new item is added
+  //Functionality:Adds a new Category in the database using POST request of Backend API
+  // Also updates the state.data and add the newly added value to the state.
   handleAddNew = event => {
     fetch(process.env.REACT_APP_API + "/categories", {
       method: "POST",
@@ -34,10 +49,16 @@ class Categories extends Component {
         }
       })
       .then(() => {
+        //Update the component state after the new category is added in the backend
         this.setData();
       });
     event.preventDefault();
   };
+
+  //handleDelete()
+  //Triggered when an item is deleted from the list
+  //Input: category id (uuid) to be deleted
+  //Functionality: Delete the item from the Backend API and update the state
   handleDelete = id => {
     fetch(process.env.REACT_APP_API + "/categories/" + id, {
       method: "DELETE",
@@ -50,6 +71,10 @@ class Categories extends Component {
     });
   };
 
+  //handleEdit():
+  //Triggered when an item is edited
+  //Input:category id to be edited, updated name
+  //the "editable" parameter is a default event parameter sent by "react-editable-text" module used in the Category component
   handleEdit = (id, name, editable) => {
     fetch(process.env.REACT_APP_API + "/categories/" + id, {
       method: "PUT",
@@ -65,6 +90,9 @@ class Categories extends Component {
       .then(editable.success());
   };
 
+  //setData()
+  //Triggers when the component is mounted or whenever there is a change in the data
+  //Functionality: fetches all (updated) categories and updates the state
   setData = () => {
     fetch(process.env.REACT_APP_API + "/categories/")
       .then(res => res.json())
@@ -76,9 +104,6 @@ class Categories extends Component {
             data: result
           });
         },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
         error => {
           this.setState({
             isLoaded: true,

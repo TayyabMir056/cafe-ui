@@ -1,3 +1,10 @@
+/*
+Component: IntermediateIngredientRecipe
+Description: The recipe of an intermediate Ingredient i.e. the inventory ingredients and their quantity used
+Parent-component: Intermediate Ingredient (Loads this component when "Edit Recipe" is clicked)
+Examples: Sponge=> 0.25kg sugar, 100mg cream
+*/
+
 import React, { Component } from "react";
 import EdiText from "react-editext";
 import Select from "react-select";
@@ -16,6 +23,9 @@ class IntermediateIngredientRecipe extends Component {
     }
   };
 
+  //setData()
+  //Triggers when the component is mounted or whenever there is a change in the data
+  //Functionality: fetches the updated recipe of particular intermediate ingredient  and updates the state
   setData = () => {
     //console.log();
     fetch(
@@ -47,6 +57,9 @@ class IntermediateIngredientRecipe extends Component {
       });
   };
 
+  //setInventoryIngredients()
+  //Triggered when the component is mounted
+  //Functionality: fetches all InventoryIngredients from the API and adds in the state.InventoryIngredients[] to be provided to the dropdown options
   setInventoryIngredients = () => {
     var checkInventoryIngExists = inventoryIngredient_id =>
       this.state.data.recipe.some(
@@ -88,6 +101,9 @@ class IntermediateIngredientRecipe extends Component {
       );
   };
 
+  //calculateCost()
+  //Triggered when whenever a recipe item is added, deleted or updated
+  //Functionality: Updates the cost of the intermediate ingredient according to the updated recipe
   calculateCost = () => {
     var _cost = 0;
     console.log("recipe", this.state.data.recipe);
@@ -100,6 +116,11 @@ class IntermediateIngredientRecipe extends Component {
     });
   };
 
+  //handleFormChange():
+  //Triggered whenever a value is entered in the form to add new recipe item
+  //Functionality: Takes the values from the form and updates corresponding value in state.formData
+  //inputs: key: the form item whose value is entered e.g inventory Ingredient, quantity
+  //        value: the value to the corresponding key
   handleFormChange = (key, value) => {
     this.setState(
       {
@@ -117,6 +138,11 @@ class IntermediateIngredientRecipe extends Component {
     );
   };
 
+  //handleEdit():
+  //Triggered when an item is edited
+  //Functionality: Updates the intermediate ingredient recipe using PUT API and updates the state
+  //Input:inventoryId: inventory ingredient id to be edited
+  //      val: the updated quantity of the inventory ingredient in the recipe
   handleEdit = (inventoryId, val) => {
     console.log(this.state);
     fetch(
@@ -142,9 +168,14 @@ class IntermediateIngredientRecipe extends Component {
       })
       .then(() => {
         this.setData();
+        this.props.setParentData();
       });
   };
 
+  //handleDelete()
+  //Triggered when an item is deleted from the list
+  //Input: category id (uuid) to be deleted
+  //Functionality: Delete the item from the Backend API and update the state
   handleDelete = id => {
     fetch(process.env.REACT_APP_API + "/intermediate-ingredient-recipe/" + id, {
       method: "DELETE",
@@ -155,9 +186,14 @@ class IntermediateIngredientRecipe extends Component {
     }).then(() => {
       this.setData();
       this.calculateCost();
+      this.props.setParentData();
     });
   };
 
+  //handleAddNew():
+  //Triggered when the form is "submitted" i.e. when a new item is added
+  //Functionality:Adds a new inventory ingredient item in the intermediate ingredient recipe in the database using POST request of Backend API
+  // Also updates the state.data and add the newly added value to the state.
   handleAddNew = event => {
     const addData = {
       intermediateIngredient: { id: this.state.data.intermediateIngredient },
@@ -175,6 +211,7 @@ class IntermediateIngredientRecipe extends Component {
       .then(() => {
         this.setData();
         this.calculateCost();
+        this.props.setParentData();
       })
       .catch(e => {
         alert("Error: " + e.message);
@@ -211,41 +248,45 @@ class IntermediateIngredientRecipe extends Component {
             Add
           </button>
         </form>
-        <span>
-          <strong>Name: </strong>
-          {this.props.name}
-        </span>
-        <span>
-          <strong>Total Cost: </strong>
-          {this.state.cost}
-        </span>
 
         <ul className="list-group">
+          <li className="list-group-item list-group-item-info">
+            <span>
+              <strong>Name: </strong>
+              {this.props.name}
+            </span>
+            <span>
+              <strong>Total Cost: </strong>
+              {this.state.cost}
+            </span>
+          </li>
           {this.state.data.recipe.map(recipeItem => (
-            <li key={recipeItem.id}>
-              <p>
-                <strong>Inventory item:</strong>{" "}
-                {recipeItem.inventoryIngredient_name}
-              </p>
-              <p>
-                <strong>inventory Item Cost:</strong>{" "}
-                {recipeItem.inventoryIngredient_cost}
-              </p>
-              <button
-                onClick={() => this.handleDelete(recipeItem.id)}
-                type="button"
-                className="btn btn-danger"
-              >
-                X
-              </button>
-              <strong>Quantity:</strong>
-              <EdiText
-                type="number"
-                value={recipeItem.quantity}
-                onSave={val =>
-                  this.handleEdit(recipeItem.inventoryIngredient, val)
-                }
-              />
+            <li className="list-group-item" key={recipeItem.id}>
+              <div className="card">
+                <p>
+                  <strong>Inventory item:</strong>{" "}
+                  {recipeItem.inventoryIngredient_name}
+                </p>
+                <p>
+                  <strong>inventory Item Cost:</strong>{" "}
+                  {recipeItem.inventoryIngredient_cost}
+                </p>
+                <button
+                  onClick={() => this.handleDelete(recipeItem.id)}
+                  type="button"
+                  className="btn btn-danger"
+                >
+                  X
+                </button>
+                <strong>Quantity:</strong>
+                <EdiText
+                  type="number"
+                  value={recipeItem.quantity}
+                  onSave={val =>
+                    this.handleEdit(recipeItem.inventoryIngredient, val)
+                  }
+                />
+              </div>
             </li>
           ))}
         </ul>

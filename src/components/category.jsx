@@ -1,3 +1,6 @@
+//Component: Category
+//returns the individual category item used in the the categories component
+
 import React, { Component } from "react";
 import Line from "react-editable-text/Line";
 class Category extends Component {

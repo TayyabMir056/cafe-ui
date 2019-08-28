@@ -1,3 +1,7 @@
+//Component: IntermediateIngredient
+//returns the individual intermediate ingredient item used in the parent IntermediateIngredients component
+//Sub-component: Intermediate Ingredient Recipe => Loaded with ROUTER when the "Edit Recipe" button of any intermediate ingredient is clicked
+
 import React, { Component } from "react";
 import EdiText from "react-editext";
 import Select from "react-select";
@@ -8,7 +12,7 @@ class IntermediateIngredient extends Component {
   state = {};
   render() {
     return (
-      <div>
+      <div className="card">
         <Router>
           <label>Name:</label>
           <EdiText
@@ -38,11 +42,25 @@ class IntermediateIngredient extends Component {
               );
             }}
           />
-          <button type="button" className="btn btn-info">
-            <Link className="nav-link" to={"/intermediate-ingredient-recipe"}>
-              Edit Recipe
-            </Link>
-          </button>
+          <div className="btn-grp">
+            <button type="button" className="btn btn-info btn-sm">
+              <Link
+                className="nav-link"
+                to={"/intermediate-ingredient-recipe"}
+                style={{ color: "#FFF" }}
+              >
+                Edit Recipe
+              </Link>
+            </button>
+
+            <button
+              onClick={() => this.props.onDelete(this.props.data.id)}
+              type="button"
+              className="btn btn-danger btn-sm"
+            >
+              X
+            </button>
+          </div>
 
           <Route
             exact
@@ -52,6 +70,7 @@ class IntermediateIngredient extends Component {
                 id={this.props.data.id}
                 name={this.props.data.name}
                 priceUnits={this.props.priceUnits}
+                setParentData={this.props.setParentData}
               />
             )}
           />

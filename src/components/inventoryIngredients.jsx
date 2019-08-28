@@ -1,3 +1,10 @@
+/*
+Component: InventoryIngredients
+Description: The list of inventory ingredients that are used in menu item recipe and intermediate ingredient recipe
+Sub-component: InventoryIngredient (Loads as a card in the card-deck. )
+Examples: Sugar, cream, flour
+*/
+
 import React, { Component } from "react";
 import InventoryIngredient from "./inventoryIngredient";
 import Select from "react-select";
@@ -13,6 +20,10 @@ class InventoryIngredients extends Component {
       priceUnit: null
     }
   };
+
+  //setData():
+  //Triggers when the component is mounted or whenever there is a change in the data
+  //Functionality: fetches all the updated inventoryIngredients from the API  and updates the state
   setData = () => {
     //console.log();
     fetch(process.env.REACT_APP_API + "/inventory-ingredient")
@@ -37,6 +48,9 @@ class InventoryIngredients extends Component {
       });
   };
 
+  //setPriceUnits():
+  //Triggered when the component is mounted
+  //Functionality: fetches all price units from the API and adds in the state.priceUnits[] to be provided to the dropdown options
   setPriceUnits = () => {
     fetch(process.env.REACT_APP_API + "/units")
       .then(res => res.json())
@@ -64,6 +78,13 @@ class InventoryIngredients extends Component {
       });
   };
 
+  //handleEdit():
+  //Triggered when an item is edited
+  //Functionality: Updates the inventory ingredient using PUT API and updates the state
+  //Input:id: inventory ingredient id to be edited
+  //      editValue: the key of the item that is edited e.g. name, price Unit
+  //      data: the updated data corresponding to the editValue Key
+
   handleEdit = (id, data, editValue) => {
     fetch(process.env.REACT_APP_API + "/inventory-ingredient/" + id, {
       method: "PUT",
@@ -79,6 +100,10 @@ class InventoryIngredients extends Component {
     });
   };
 
+  //handleDelete():
+  //Triggered when an item is deleted from the list
+  //Input: category id (uuid) to be deleted
+  //Functionality: Delete the item from the Backend API and update the state
   handleDelete = id => {
     fetch(process.env.REACT_APP_API + "/inventory-ingredient/" + id, {
       method: "DELETE",
@@ -90,6 +115,12 @@ class InventoryIngredients extends Component {
       this.setData();
     });
   };
+
+  //handleFormChange():
+  //Triggered whenever a value is entered in the form to add new inventory ingredient
+  //Functionality: Takes the values from the form and updates corresponding value in state.formData
+  //inputs: key: the form item whose value is entered e.g name,cost,priceunit
+  //        value: the value to the corresponding key
   handleFormChange = (key, value) => {
     this.setState(
       {
@@ -105,6 +136,10 @@ class InventoryIngredients extends Component {
     );
   };
 
+  //handleAddNew():
+  //Triggered when the form is "submitted" i.e. when a new item is added
+  //Functionality:Adds a new inventory ingredient in the database using POST request of Backend API
+  // Also updates the state.data and add the newly added value to the state.
   handleAddNew = event => {
     fetch(process.env.REACT_APP_API + "/inventory-ingredient", {
       method: "POST",
@@ -134,15 +169,7 @@ class InventoryIngredients extends Component {
     return (
       <div>
         {/* New Form */}
-        <form
-          onSubmit={
-            this.state.formData.name &&
-            this.state.formData.cost &&
-            this.state.formData.priceUnit
-              ? () => this.handleAddNew
-              : () => alert("Some Missing Data")
-          }
-        >
+        <form onSubmit={this.handleAddNew}>
           <div className="form-group">
             <label for="formInputName">Name:</label>
             <input
@@ -180,17 +207,21 @@ class InventoryIngredients extends Component {
           </button>
         </form>
         <span />
+
         <ul className="list-group">
-          {this.state.data.map(inventoryIngredient => (
-            <li key={inventoryIngredient.id}>
-              <InventoryIngredient
-                data={inventoryIngredient}
-                priceUnits={this.state.priceUnits}
-                onEdit={this.handleEdit}
-                onDelete={this.handleDelete}
-              />
-            </li>
-          ))}
+          <div className="card-deck">
+            {this.state.data.map(inventoryIngredient => (
+              <li key={inventoryIngredient.id}>
+                <InventoryIngredient
+                  data={inventoryIngredient}
+                  priceUnits={this.state.priceUnits}
+                  onEdit={this.handleEdit}
+                  onDelete={this.handleDelete}
+                  setParentData={this.setData}
+                />
+              </li>
+            ))}
+          </div>
         </ul>
       </div>
     );

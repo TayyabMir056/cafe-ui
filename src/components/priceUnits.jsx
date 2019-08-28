@@ -64,7 +64,9 @@ class PriceUnits extends Component {
         Accept: "application/json",
         "Content-Type": "application/json"
       }
-    }).then(this.setData());
+    }).then(() => {
+      this.setData();
+    });
   };
 
   handleEdit = (id, name, editable) => {

@@ -1,3 +1,10 @@
+/*
+Component: IntermediateIngredients
+Description: The List of IntermediateIngredient (Ingredients made up from inventory ingredients) that can be used in a menu-item
+Sub-components: Intermediate Ingredient(imported as a card)
+Examples: Sponge(made from inventory items: flour, cream, sugar)
+*/
+
 import React, { Component } from "react";
 import IntermediateIngredient from "./intermediateIngredient";
 import Select from "react-select";
@@ -12,8 +19,11 @@ class IntermediateIngredients extends Component {
       priceUnit: null
     }
   };
+
+  //setData()
+  //Triggers when the component is mounted or whenever there is a change in the data
+  //Functionality: fetches all (updated) intermediate ingredients and updates the state
   setData = () => {
-    //console.log();
     fetch(process.env.REACT_APP_API + "/intermediate-ingredient")
       .then(res => res.json())
       .then(
@@ -35,6 +45,10 @@ class IntermediateIngredients extends Component {
         console.log("state", this.state);
       });
   };
+
+  //setPriceUnits()
+  //Triggered when the component is mounted
+  //Functionality: fetches all price units from the API and adds in the state.priceUnits[] to be provided to the dropdown options
   setPriceUnits = () => {
     fetch(process.env.REACT_APP_API + "/units")
       .then(res => res.json())
@@ -61,6 +75,13 @@ class IntermediateIngredients extends Component {
         console.log("state", this.state);
       });
   };
+
+  //handleEdit():
+  //Triggered when an item is edited
+  //Functionality: Updates the intermediate ingredient using PUT API and updates the state
+  //Input:id: intermediate ingredient id to be edited
+  //      editValue: the key of the item that is edited e.g. name, price Unit
+  //      data: the updated data corresponding to the editValue Key
   handleEdit = (id, data, editValue) => {
     fetch(process.env.REACT_APP_API + "/intermediate-ingredient/" + id, {
       method: "PUT",
@@ -75,6 +96,11 @@ class IntermediateIngredients extends Component {
       this.setData();
     });
   };
+
+  //handleDelete()
+  //Triggered when an item is deleted from the list
+  //Input: category id (uuid) to be deleted
+  //Functionality: Delete the item from the Backend API and update the state
   handleDelete = id => {
     fetch(process.env.REACT_APP_API + "/intermediate-ingredient/" + id, {
       method: "DELETE",
@@ -87,6 +113,11 @@ class IntermediateIngredients extends Component {
     });
   };
 
+  //handleFormChange():
+  //Triggered whenever a value is entered in the "Add new intermediate ingredient item" form
+  //Functionality: Takes the values from the form and updates corresponding value in state.formData
+  //inputs: key: the form item whose value is entered e.g name, price unit
+  //        value: the value to the corresponding key
   handleFormChange = (key, value) => {
     this.setState(
       {
@@ -101,6 +132,10 @@ class IntermediateIngredients extends Component {
     );
   };
 
+  //handleAddNew():
+  //Triggered when the form is "submitted" i.e. when a new item is added
+  //Functionality:Adds a new intermediate ingredient in the database using POST request of Backend API
+  // Also updates the state.data and add the newly added value to the state.
   handleAddNew = event => {
     if (this.state.formData.name && this.state.formData.priceUnit) {
       console.log("handle Addd New Called");
@@ -159,18 +194,19 @@ class IntermediateIngredients extends Component {
             Add
           </button>
         </form>
-        <ul className="list-group">
+        <div className="card-deck">
           {this.state.data.map(intermediateItem => (
-            <li key={intermediateItem.id}>
+            <div className="col-sm-4">
               <IntermediateIngredient
                 data={intermediateItem}
                 priceUnits={this.state.priceUnits}
                 onEdit={this.handleEdit}
                 onDelete={this.handleDelete}
+                setParentData={this.setData}
               />
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
     );
   }

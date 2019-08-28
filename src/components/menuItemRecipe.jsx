@@ -22,20 +22,23 @@ class MenuItemRecipe extends Component {
     }
   };
 
+  //calculateCost()
+  //Triggered when whenever a recipe item is added, deleted or updated
+  //Functionality: Updates the cost of the Menu Item according to the updated recipe
   calculateCost = () => {
-    console.log("Calulcating Cost");
     var _cost = 0;
-    console.log("recipe", this.state.data.recipe);
     this.state.data.recipe.forEach(item => {
       _cost = _cost + item.quantity * item.ingredientCost;
-      console.log("item", item);
     });
     this.setState({
       cost: _cost
     });
   };
+
+  //setData():
+  //Triggers when the component is mounted or whenever there is a change in the data
+  //Functionality: fetches the updated recipe of particular menu item and updates the state
   setData = () => {
-    //console.log();
     fetch(process.env.REACT_APP_API + "/menu-item-recipe/" + this.props.id)
       .then(res => res.json())
       .then(
@@ -61,6 +64,9 @@ class MenuItemRecipe extends Component {
       });
   };
 
+  //setIngredients():
+  //Triggered when the component is mounted
+  //Functionality: fetches all ingredients (both inventory and intermediate)  from the API and adds in the state.Ingredients[] to be provided to the dropdown options
   setIngredients = () => {
     var _ingredients = [];
 
@@ -110,6 +116,12 @@ class MenuItemRecipe extends Component {
       });
   };
 
+  //handleEdit():
+  //Triggered when an item is edited
+  //Functionality: Updates the Menu item recipe using PUT API and updates the state
+  //Input:ingredientId: ingredient id to update edited
+  //      ingredientType: Enum(Inventory or Ingredient)
+  //      quantity: updated quantity
   handleEdit = (ingredientId, ingredientType, quantity) => {
     console.log(this.state);
     fetch(process.env.REACT_APP_API + "/menu-item-recipe", {
@@ -143,9 +155,18 @@ class MenuItemRecipe extends Component {
       })
       .then(() => {
         this.setData();
+      })
+      .then(() => {
+        this.props.setParentData();
       });
   };
 
+  //handleFormChange():
+  //Triggered whenever a value is entered in the form to add new recipe item
+  //Functionality: Takes the values from the form and updates corresponding value in state.formData
+  //inputs: key: the form item whose value is entered e.g inventory Ingredient, quantity
+  //        type: type of ingredient (if key is ingredient ) e.g. inventory or ingredient
+  //        value: the value to the corresponding key
   handleFormChange = (key, type, value) => {
     this.setState(
       {
@@ -174,41 +195,39 @@ class MenuItemRecipe extends Component {
     );
   };
 
+  //handleAddNew():
+  //Triggered when the form is "submitted" i.e. when a new item is added
+  //Functionality:Adds a new  ingredient item in the Menu recipe in the database using POST request of Backend API
+  // Also updates the state.data and add the newly added value to the state.
   handleAddNew = event => {
-    if (
-      !(
-        (this.state.formData.intermediateIngredient ||
-          this.state.formData.inventoryIngredient) &&
-        this.state.formData.ingredientType &&
-        this.state.formData.quantity
-      )
-    )
-      alert("Missing some data!");
-    else {
-      const addData = {
-        menuItem: this.state.data.menuItem,
-        recipe: [this.state.formData]
-      };
-      fetch(process.env.REACT_APP_API + "/menu-item-recipe", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(addData)
+    const addData = {
+      menuItem: this.state.data.menuItem,
+      recipe: [this.state.formData]
+    };
+    fetch(process.env.REACT_APP_API + "/menu-item-recipe", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(addData)
+    })
+      .then(res => res.json())
+      .then(() => {
+        this.setData();
+        this.calculateCost();
+        this.props.setParentData();
       })
-        .then(res => res.json())
-        .then(() => {
-          this.setData();
-          this.calculateCost();
-        })
-        .catch(e => {
-          alert("Error: " + e.message);
-        });
-      event.preventDefault();
-    }
+      .catch(e => {
+        alert("Error: " + e.message);
+      });
+    event.preventDefault();
   };
 
+  //handleDelete()
+  //Triggered when an item is deleted from the list
+  //Input: category id (uuid) to be deleted
+  //Functionality: Delete the item from the Backend API and update the state
   handleDelete = id => {
     fetch(process.env.REACT_APP_API + "/menu-item-recipe/" + id, {
       method: "DELETE",
@@ -219,6 +238,7 @@ class MenuItemRecipe extends Component {
     }).then(() => {
       this.setData();
       this.calculateCost();
+      this.props.setParentData();
     });
   };
 
@@ -254,17 +274,20 @@ class MenuItemRecipe extends Component {
             Add
           </button>
         </form>
-        <label>
-          <strong>Name:</strong>{" "}
-        </label>
-        <span>{this.props.name}</span>
-        <label>
-          <strong>Cost:</strong>
-        </label>
-        <span>{this.state.cost}</span>
+
         <ul className="list-group">
+          <li className="list-group-item list-group-item-info">
+            <label>
+              <strong>Name:</strong>{" "}
+            </label>
+            <span>{this.props.name}</span>
+            <label>
+              <strong>Cost:</strong>
+            </label>
+            <span>{this.state.cost}</span>
+          </li>
           {this.state.data.recipe.map(recipeItem => (
-            <li key={recipeItem.id}>
+            <li className="list-group-item" key={recipeItem.id}>
               <p>
                 <strong>
                   {recipeItem.ingredientName +
