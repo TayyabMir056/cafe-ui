@@ -10,7 +10,7 @@
     "react-editable-text": "^1.1.0",
     "react-editext": "^3.6.1",
     "react-router-dom": "^5.0.1",
-    "react-scripts": "3.1.1",
+    "react-scripts": "5.0.1",
     "react-select": "^3.0.4"
   },
   "scripts": {
